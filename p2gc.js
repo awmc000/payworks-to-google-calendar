@@ -87,6 +87,5 @@ new Promise(async (resolve) => {
   resolve();
 }).then(() => {
   payworksShifts = getShifts()
-  console.log(payworksShifts);
   browser.runtime.sendMessage({from: "content", data: payworksShifts});
 });
