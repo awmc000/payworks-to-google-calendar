@@ -1,0 +1,19 @@
+{
+    "manifest_version": 1,
+    "name": "Payworks to Google Calendar",
+    "version": "1.0",
+  
+    "description": "Collects your shifts from Payworks when you open it and sends them to your Google Calendar.",
+  
+    "icons": {
+      "48": "icons/beasts-48.png"
+    },
+    "permissions": ["activeTab"],
+    "content_scripts": [
+      {
+        "matches": ["*://payroll.payworks.ca/tom/ess/TimeOffCalendar.aspx*"],
+        "js": ["p2gc.js"]
+      }
+    ]
+  }
+  
