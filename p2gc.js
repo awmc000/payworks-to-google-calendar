@@ -8,7 +8,7 @@
  */
 
 // GLOBALS
-let shifts;
+let payworksShifts;
 
 /**
  * Converts a 12 hour time with meridian to a 24 hour time.
@@ -86,6 +86,7 @@ new Promise(async (resolve) => {
   
   resolve();
 }).then(() => {
-  shifts = getShifts()
-  console.log(shifts);
+  payworksShifts = getShifts()
+  console.log(payworksShifts);
+  browser.runtime.sendMessage({from: "content", data: payworksShifts});
 });
