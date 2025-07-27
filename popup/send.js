@@ -105,6 +105,7 @@ const AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth";
  * */
 const authorize = async () => {
 
+  console.log('starting auth');
   // Create the code verifier: 128 chars in [A-Za-z0-9\-._~]
   let charsAvailable = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
 
@@ -137,7 +138,9 @@ const authorize = async () => {
   let authUrlQuery = new URL(AUTH_URL);
 
   authUrlQuery.searchParams.append('client_id', CLIENT_ID);
-  authUrlQuery.searchParams.append('redirect_uri', REDIRECT_URI);
+  // https://0269a39dfd410e5f7e4bb6811c12e826b2eab132.extensions.allizom.org/
+  // authUrlQuery.searchParams.append('redirect_uri', REDIRECT_URI);
+  authUrlQuery.searchParams.append('redirect_uri', "https://0269a39dfd410e5f7e4bb6811c12e826b2eab132.extensions.allizom.org/");
   authUrlQuery.searchParams.append('scope', SCOPE);
   authUrlQuery.searchParams.append('code_challenge', codeChallenge);
   authUrlQuery.searchParams.append('code_challenge_method', "S256");
@@ -145,14 +148,20 @@ const authorize = async () => {
 
   const authRequest = new Request(authUrlQuery, {method: "GET" });
 
-  window
-    .fetch(authRequest)
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-    console.log(response);
+  browser.identity.launchWebAuthFlow({
+    url: authUrlQuery.toString(), 
+    interactive: true,
   });
+
+  // window
+  //   .fetch(authRequest)
+  //   .then((response) => {
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! Status: ${response.status}`);
+  //   }
+  //   console.log(response);
+  //   window.open(response.url);
+  // });
 };
 
 window.addEventListener("message", (event) => {
@@ -164,3 +173,5 @@ window.addEventListener("message", (event) => {
     // exchangeCodeForToken(code);
   }
 });
+
+document.getElementById('authButton').onclick = authorize;
