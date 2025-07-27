@@ -6,9 +6,15 @@
   "description": "Collects your shifts from Payworks when you open it and sends them to your Google Calendar.",
   
   "icons": {
-    "48": "icons/beasts-48.png"
+    "64": "icons/p2gc-64.png"
   },
-  "permissions": ["activeTab"],
+  "permissions": [
+    "activeTab",
+    "identity",
+    "notifications",
+    "*://www.googleapis.com/*",
+    "*://accounts.google.com/*"
+  ],
   "content_scripts": [
     {
       "matches": ["*://payroll.payworks.ca/tom/ess/TimeOffCalendar.aspx*"],
@@ -16,11 +22,14 @@
     }
   ],
   "browser_action": {
-    "default_icon": "icons/beasts-48.png",
+    "default_icon": "icons/p2gc-64.png",
     "default_title": "Payworks To Google Calendar",
     "default_popup": "popup/send.html"
   },
   "background": {
-    "scripts": ["background.js"]
+    "scripts": [
+      "background/background.js",
+      "background/main.js",
+      "background/userinfo.js"]
   }
 }

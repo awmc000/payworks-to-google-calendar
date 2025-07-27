@@ -9,6 +9,7 @@ browser.runtime.sendMessage({ from: "popup" }).then((response) => {
     let li = document.createElement('li');
     li.textContent = shiftToStr(element);
     document.getElementById('shiftList').appendChild(li);
+    document.querySelector("#redirect-url").textContent = browser.identity.getRedirectURL();
   });
 });
 
