@@ -64,6 +64,8 @@ const getShifts = () => {
           "shift": {
             "start": to24Hour(splitShift[0]), 
             "end": to24Hour(splitShift[1]),
+            "startOriginal": splitShift[0],
+            "endOriginal": splitShift[1],
             "description": descDiv.textContent.trim()
           }
         });
@@ -75,17 +77,36 @@ const getShifts = () => {
 };
 
 // Only run once .calendar__items exists, querying every few hundred ms
-new Promise(async (resolve) => {
-  let itemsExist = () => document.getElementsByClassName('calendar__item').length > 0;
-  let dayContentExists = () => document.getElementsByClassName('calendar__day-content').length > 30;
-  let pendingSpinnerGone = () => document.getElementById('pendingSpinner') == null;
-  
+async function waitForCalendarToLoad({
+  itemClass = 'calendar__item',
+  dayContentClass = 'calendar__day-content',
+  spinnerId = 'pendingSpinner',
+  minDayContentCount = 30,
+  checkInterval = 200
+} = {}) {
+  const itemsExist = () =>
+    document.getElementsByClassName(itemClass).length > 0;
+
+  const dayContentExists = () =>
+    document.getElementsByClassName(dayContentClass).length > minDayContentCount;
+
+  const pendingSpinnerGone = () =>
+    document.getElementById(spinnerId) == null;
+
   while (!(itemsExist() && dayContentExists() && pendingSpinnerGone())) {
-    await new Promise(r => setTimeout(r, 200));
+    await new Promise((r) => setTimeout(r, checkInterval));
   }
-  
-  resolve();
-}).then(() => {
-  payworksShifts = getShifts()
-  browser.runtime.sendMessage({from: "content", data: payworksShifts});
-});
+}
+
+// Usage:
+
+const loadShiftData = () => {
+  waitForCalendarToLoad().then(() => {
+    const payworksShifts = getShifts();
+    browser.runtime.sendMessage({ from: 'content', data: payworksShifts });
+    console.log(payworksShifts);
+  });
+};
+
+loadShiftData();
+document.querySelector('.date-card-selector__cards').onclick = loadShiftData;
