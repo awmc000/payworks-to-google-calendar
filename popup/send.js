@@ -84,9 +84,57 @@ browser.runtime.sendMessage({ from: "popup" }).then((response) => {
   });
 });
 
+// Interactions with OAuth and Google Calendar API ============================
+
 /**
 * "Send Shifts" button handler. 
 */
 const sendShifts = () => {
   console.log("TODO: Send shifts to google API");
+};
+
+const CLIENT_ID = "977868162840-b76madpnpo44r7jud93d4lpodnnbkfeb.apps." + 
+  "googleusercontent.com";
+const REDIRECT_URI = "codes.amccolm:p2gcauth";
+const SCOPE = "https://www.googleapis.com/auth/calendar";
+
+/**
+ * Entry point to OAuth 2.0 PKCE flow 
+ * */
+const authorize = () => {
+
+  // Create the code verifier: 128 chars in [A-Za-z0-9\-._~]
+  let charsAvailable = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
+
+  let codeVerifier = "";
+
+  for (let i = 0; i < 128; i++) {
+    codeVerifier = codeVerifier + charsAvailable.charAt(Math.floor(Math.random() * charsAvailable.length));
+  }
+
+  // Create code challenge: Base64URL (with no padding) encoded SHA256 hash of the code verifier.
+  // BASE64URL-ENCODE(SHA256(ASCII(code_verifier)))
+  /*
+   how to SHA256 encode:
+   await window.crypto.subtle
+    .digest('SHA-256', 
+      new TextEncoder().encode(codeVerifier))
+  
+    how to base64 encode:
+      Convert the SHA-256 hash (an ArrayBuffer) to a Uint8Array
+      Convert that to a regular string (or binary)
+      Base64 encode
+      Replace characters to make it Base64URL and strip padding
+  */
+  let codeChallenge = "";
+
+  // Make a request to https://accounts.google.com/o/oauth2/v2/auth
+  // client_id: CLIENT_ID
+  // redirect_uri: https://amccolm.codes/p2gcauth => codes.amccolm:p2gcauth
+  // scope: SCOPE
+  // code_challenge: codeChallenge
+  // code_challenge_method: "S256"
+
+
+
 };
