@@ -15,8 +15,3 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return true;
   }
 });
-
-// Hitting Google APIs ========================================================
-const REDIRECT_URL = browser.identity.getRedirectURL();
-const CLIENT_ID = "977868162840-b76madpnpo44r7jud93d4lpodnnbkfeb.apps." + 
-  "googleusercontent.com";

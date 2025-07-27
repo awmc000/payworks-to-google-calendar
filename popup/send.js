@@ -93,15 +93,22 @@ const sendShifts = () => {
   console.log("TODO: Send shifts to google API");
 };
 
+// WEB type
 const CLIENT_ID = "977868162840-b76madpnpo44r7jud93d4lpodnnbkfeb.apps." + 
   "googleusercontent.com";
-const REDIRECT_URI = "codes.amccolm:p2gcauth";
+
+// DESKTOP APP type
+// const CLIENT_ID = "977868162840-nuhqsm34lp0buq4mlbdpc3e4vb83jav3.apps.googleusercontent.com";
+// const REDIRECT_URI = "codes.amccolm:p2gcauth";
+// https://amccolm.codes/p2gcauth
+const REDIRECT_URI = "https://amccolm.codes/p2gcauth";
 const SCOPE = "https://www.googleapis.com/auth/calendar";
+const AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth";
 
 /**
  * Entry point to OAuth 2.0 PKCE flow 
  * */
-const authorize = () => {
+const authorize = async () => {
 
   // Create the code verifier: 128 chars in [A-Za-z0-9\-._~]
   let charsAvailable = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
@@ -126,15 +133,40 @@ const authorize = () => {
       Base64 encode
       Replace characters to make it Base64URL and strip padding
   */
+  // SHA-256 encode the code verifier.
+  let shaEncodedVerifier = await window.crypto.subtle
+    .digest('SHA-256', new TextEncoder().encode(codeVerifier));
+
+  // Base 64 encode the SHA-256 ciphertext
+  let binary = '';
+  const bytes = new Uint8Array(shaEncodedVerifier);
+  for (let i = 0; i < bytes.byteLength; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  binary = btoa(binary)
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '');
   let codeChallenge = "";
 
-  // Make a request to https://accounts.google.com/o/oauth2/v2/auth
-  // client_id: CLIENT_ID
-  // redirect_uri: https://amccolm.codes/p2gcauth => codes.amccolm:p2gcauth
-  // scope: SCOPE
-  // code_challenge: codeChallenge
-  // code_challenge_method: "S256"
+  // Prepare the Google OAuth URL with parameters
+  let authUrlQuery = new URL(AUTH_URL);
 
+  authUrlQuery.searchParams.append('client_id', CLIENT_ID);
+  authUrlQuery.searchParams.append('redirect_uri', REDIRECT_URI);
+  authUrlQuery.searchParams.append('scope', SCOPE);
+  authUrlQuery.searchParams.append('code_challenge', codeChallenge);
+  authUrlQuery.searchParams.append('code_challenge_method', "S256");
+  authUrlQuery.searchParams.append('response_type', "code");
 
+  const authRequest = new Request(authUrlQuery, {method: "GET" });
 
+  window
+    .fetch(authRequest)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    console.log(response);
+  });
 };
