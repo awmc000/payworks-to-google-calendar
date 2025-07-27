@@ -1,7 +1,7 @@
 /**
  * p2gc.js
  * 
- * Payworks to Google Calendar browser extension, main source code file
+ * Payworks to Google Calendar browser extension, main content script
  *
  * Alex McColm, july 20 2025
  *
@@ -76,29 +76,24 @@ const getShifts = () => {
   return results;
 };
 
-// Only run once .calendar__items exists, querying every few hundred ms
 async function waitForCalendarToLoad({
   itemClass = 'calendar__item',
   dayContentClass = 'calendar__day-content',
   spinnerId = 'pendingSpinner',
-  minDayContentCount = 30,
-  checkInterval = 200
 } = {}) {
   const itemsExist = () =>
     document.getElementsByClassName(itemClass).length > 0;
 
   const dayContentExists = () =>
-    document.getElementsByClassName(dayContentClass).length > minDayContentCount;
+    document.getElementsByClassName(dayContentClass).length > 30;
 
   const pendingSpinnerGone = () =>
     document.getElementById(spinnerId) == null;
 
   while (!(itemsExist() && dayContentExists() && pendingSpinnerGone())) {
-    await new Promise((r) => setTimeout(r, checkInterval));
+    await new Promise((r) => setTimeout(r, 200));
   }
 }
-
-// Usage:
 
 const loadShiftData = () => {
   waitForCalendarToLoad().then(() => {

@@ -1,6 +1,12 @@
+/**
+ * send.js
+ * 
+ * Primary popup script
+ */
+
 
 function generateGoogleCalendarLinkLocal({
-  title = 'Untitled Event',
+  title = 'Work',
   startDateTime, // Date object or ISO string
   endDateTime,   // Date object or ISO string
   details = '',
@@ -16,9 +22,8 @@ function generateGoogleCalendarLinkLocal({
     const dd = pad(date.getDate());
     const HH = pad(date.getHours());
     const mm = pad(date.getMinutes());
-    const ss = pad(date.getSeconds());
 
-    return `${yyyy}${MM}${dd}T${HH}${mm}${ss}`;
+    return `${yyyy}${MM}${dd}T${HH}${mm}00`;
   };
 
   const base = 'https://calendar.google.com/calendar/render?action=TEMPLATE';

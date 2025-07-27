@@ -3,7 +3,7 @@
   "name": "Payworks to Google Calendar",
   "version": "1.0",
   
-  "description": "Collects your shifts from Payworks when you open it and sends them to your Google Calendar.",
+  "description": "Collects your shifts from Payworks when you open it and allows you to send them to your Google Calendar.",
   
   "icons": {
     "64": "icons/p2gc-64.png"
@@ -31,5 +31,12 @@
       "background/background.js",
       "background/main.js",
       "background/userinfo.js"]
-  }
+  },
+  "oauth2": {
+    "client_id": "977868162840-b76madpnpo44r7jud93d4lpodnnbkfeb.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/calendar.app.created",
+      "https://www.googleapis.com/auth/calendar.events.owned"
+    ]
+  }  
 }

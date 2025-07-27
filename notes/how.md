@@ -8,6 +8,7 @@
 - To get a list of shifts, it scrapes the calendar when the user has it open.
 - The browser extension is made up of a content script, a background script, and a toolbar popup page with a script.
 - Ideally the pop-up page will interact directly with the Google Calendar API with no need for an extension backend API.
+- A minimal version can create templated links to click to add calendar events, though this is not as useful, saving less time. 
 
 ## How does the extension find my shifts?
 
