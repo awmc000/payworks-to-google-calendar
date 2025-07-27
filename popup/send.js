@@ -96,11 +96,6 @@ const sendShifts = () => {
 // WEB type
 const CLIENT_ID = "977868162840-b76madpnpo44r7jud93d4lpodnnbkfeb.apps." + 
   "googleusercontent.com";
-
-// DESKTOP APP type
-// const CLIENT_ID = "977868162840-nuhqsm34lp0buq4mlbdpc3e4vb83jav3.apps.googleusercontent.com";
-// const REDIRECT_URI = "codes.amccolm:p2gcauth";
-// https://amccolm.codes/p2gcauth
 const REDIRECT_URI = "https://amccolm.codes/p2gcauth";
 const SCOPE = "https://www.googleapis.com/auth/calendar";
 const AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth";
@@ -121,18 +116,6 @@ const authorize = async () => {
 
   // Create code challenge: Base64URL (with no padding) encoded SHA256 hash of the code verifier.
   // BASE64URL-ENCODE(SHA256(ASCII(code_verifier)))
-  /*
-   how to SHA256 encode:
-   await window.crypto.subtle
-    .digest('SHA-256', 
-      new TextEncoder().encode(codeVerifier))
-  
-    how to base64 encode:
-      Convert the SHA-256 hash (an ArrayBuffer) to a Uint8Array
-      Convert that to a regular string (or binary)
-      Base64 encode
-      Replace characters to make it Base64URL and strip padding
-  */
   // SHA-256 encode the code verifier.
   let shaEncodedVerifier = await window.crypto.subtle
     .digest('SHA-256', new TextEncoder().encode(codeVerifier));
@@ -147,7 +130,8 @@ const authorize = async () => {
     .replace(/\+/g, '-')
     .replace(/\//g, '_')
     .replace(/=+$/, '');
-  let codeChallenge = "";
+
+  let codeChallenge = binary;
 
   // Prepare the Google OAuth URL with parameters
   let authUrlQuery = new URL(AUTH_URL);
@@ -170,3 +154,13 @@ const authorize = async () => {
     console.log(response);
   });
 };
+
+window.addEventListener("message", (event) => {
+  if (event.data?.type === "oauth2_callback") {
+    const { code, state } = event.data;
+    console.log("Received code:", code);
+
+    // Continue with token exchange using fetch
+    // exchangeCodeForToken(code);
+  }
+});
